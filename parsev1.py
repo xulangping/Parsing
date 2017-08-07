@@ -97,17 +97,17 @@ def recover(ids, parents, expr_no_brackets):
             pass
         elif if_left(parents, i):
             num = num_bracket(ids, parents, i)
-            string = ''
+            string = []
             for j in range(num):
-                string += '('
-            expr_recover[i] = string + expr_recover[i]
+                string.append('(')
+            expr_recover[i] = [string, expr_recover[i]]
         else:
             num = num_bracket(ids, parents, i)
-            string = ''
+            string = []
             for j in range(num):
-                string += ')'
-            expr_recover[i] = expr_recover[i] + string
-
+                string.append(')')
+            expr_recover[i] = [expr_recover[i], string]
+    expr_recover = [str(el) for el in flatten(expr_recover)]
     return expr_recover
 
 
@@ -121,4 +121,4 @@ for i in range(100):
     print(ids, parents, ''.join(expr), ''.join(expr_no_brackets))
     expr_recover = recover(ids, parents, expr_no_brackets)
     print(''.join(expr_recover))
-    assert ''.join(expr_recover) == ''.join(expr)
+    assert expr_recover == expr
