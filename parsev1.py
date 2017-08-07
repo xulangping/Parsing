@@ -76,12 +76,14 @@ def num_bracket(ids, parents, i):
             for j in range(len(ids)):
                 if ids[j] == parents[i]:
                     i = j
+                    break
     else:
-        while not if_left(parents, i) and parents[i] != -1:
+        while (not if_left(parents, i)) and (parents[i] != -1):
             num += 1
             for j in range(len(ids)):
                 if ids[j] == parents[i]:
-                    i = parents[j]
+                    i = j
+                    break
     return num
 
 
@@ -119,3 +121,4 @@ for i in range(100):
     print(ids, parents, ''.join(expr), ''.join(expr_no_brackets))
     expr_recover = recover(ids, parents, expr_no_brackets)
     print(''.join(expr_recover))
+    assert ''.join(expr_recover) == ''.join(expr)
