@@ -66,18 +66,22 @@ def if_left(parents, i):
     return False
 
 
-def num_bracket(parents, i):
+def num_bracket(ids, parents, i):
     num = 0
     if parents[i] == -1:
         return num
     elif if_left(parents, i):
         while if_left(parents, i):
             num += 1
-            i = parents[i]
+            for j in range(len(ids)):
+                if ids[j] == parents[i]:
+                    i = j
     else:
         while not if_left(parents, i) and parents[i] != -1:
             num += 1
-            i = parents[i]
+            for j in range(len(ids)):
+                if ids[j] == parents[i]:
+                    i = parents[j]
     return num
 
 
@@ -90,13 +94,13 @@ def recover(ids, parents, expr_no_brackets):
         if not p1.match(expr_no_brackets[i]) or parents[i] == -1:
             pass
         elif if_left(parents, i):
-            num = num_bracket(parents, i)
+            num = num_bracket(ids, parents, i)
             string = ''
             for j in range(num):
                 string += '('
             expr_recover[i] = string + expr_recover[i]
         else:
-            num = num_bracket(parents, i)
+            num = num_bracket(ids, parents, i)
             string = ''
             for j in range(num):
                 string += ')'
@@ -113,5 +117,5 @@ for i in range(100):
     expr_no_brackets = [j for j in expr if j not in '()']
     assert len(expr_no_brackets) == len(ids) == len(parents)
     print(ids, parents, ''.join(expr), ''.join(expr_no_brackets))
-    #expr_recover = recover(ids, parents, expr_no_brackets)
-    #print(expr_recover)
+    expr_recover = recover(ids, parents, expr_no_brackets)
+    print(''.join(expr_recover))
