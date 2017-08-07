@@ -22,8 +22,9 @@ def make_nodes(n, m):
                 idx_node += 1
                 child_node = Node(symbol, idx_node, node.id)
                 x = add_node(child_node, n + 1, m, idx_node)
-                idx_node += 1
+                idx_node = x[3]
                 y = add_node(child_node, n + 1, m, idx_node)
+                idx_node = y[3]
                 ids = [x[0], child_node.id, y[0]]
                 parents = [x[1], node.id, y[1]]
                 expr = ['(', x[2], symbol, y[2], ')']
@@ -40,8 +41,8 @@ def make_nodes(n, m):
             child_node = Node(expr, idx_node, node.id)
             ids = child_node.id
             parents = node.id
-        return ids, parents, expr
-    ids, parents, expr = add_node(rroot, n, m, idx_node)
+        return ids, parents, expr, idx_node
+    ids, parents, expr, idx_node = add_node(rroot, n, m, idx_node)
     # flatten
     ids = list(flatten(ids))
     parents = list(flatten(parents))
@@ -112,6 +113,10 @@ for i in range(100):
     max_lev = random.randint(1, 5)
     s = make_nodes(lev, max_lev)
     ids, parents, expr = s
+
+    new_ids = list(set(ids))
+    assert len(ids) == len(new_ids)
+
     expr_no_brackets = [j for j in expr if j not in '()']
     assert len(expr_no_brackets) == len(ids) == len(parents)
     print(ids, parents, ''.join(expr), ''.join(expr_no_brackets))
