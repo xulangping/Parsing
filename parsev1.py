@@ -2,7 +2,7 @@ import random
 import re
 symbols = ['+', '-', '*']
 
-
+#
 class Node:
 
     def __init__(self, content, id, parent):
