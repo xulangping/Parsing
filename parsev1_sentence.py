@@ -1,6 +1,7 @@
 import random
 import re
-symbols = ['的', '和']
+l_c = ['和']
+l_u = ['的']
 l_v = ['是', '在', '有']
 l_n = ['牛顿', '毛泽东', '凯撒大帝']
 l_nk = ['基本信息', '职业', '代表作品']
@@ -16,31 +17,55 @@ def make_nodes(n, m):
     rroot = Node('*root*', -1, None)
     Node.idx_node = 0
 
-    def add_node(node, n, m, idx_node):
+    def add_node(node, n, m, idx_node, property):
         if n < m:
-            if random.random() > 0.6:  # add sub-tree
-                symbol = random.choice(symbols)
-                child_node = Node(symbol, node.idx_node, node.id)
-                x = add_node(child_node, n + 1, m, child_node.idx_node)
-                y = add_node(child_node, n + 1, m, child_node.idx_node)
-                ids = [x[0], child_node.id, y[0]]
-                parents = [x[1], node.id, y[1]]
-                expr = ['(', x[2], symbol, y[2], ')']
-            else:  # add leaf (number)
-                expr = random.randint(1, 9)
+            if property == 'n':
+                if random.random() > 0.6:  # add sub-tree
+                    i = random.choice([1, 0])
+                    symbol = random.choice([l_c, l_v][i])
+                    child_node = Node(symbol, node.idx_node, node.id)
+                    x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                    y = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                    ids = [x[0], child_node.id, y[0]]
+                    parents = [x[1], node.id, y[1]]
+                    expr = ['(', x[2], symbol, y[2], ')']
+                else:  # add leaf (number)
+                    expr = random.choice(l_n)
+                    idx_node += 1
+                    child_node = Node(expr, node.idx_node, node.id)
+                    ids = child_node.id
+                    parents = node.id
+            else:
+                if random.random() > 0.6:  # add sub-tree
+                    symbol = random.choice(l_u)
+                    child_node = Node(symbol, node.idx_node, node.id)
+                    x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                    y = add_node(child_node, n + 1, m, child_node.idx_node, 'nk')
+                    ids = [x[0], child_node.id, y[0]]
+                    parents = [x[1], node.id, y[1]]
+                    expr = ['(', x[2], symbol, y[2], ')']
+                else:  # add leaf (number)
+                    expr = random.choice(l_nk)
+                    idx_node += 1
+                    child_node = Node(expr, node.idx_node, node.id)
+                    ids = child_node.id
+                    parents = node.id
+        else:
+            # raise
+            if property == 'n':
+                expr = random.choice(l_n)
                 idx_node += 1
                 child_node = Node(expr, node.idx_node, node.id)
                 ids = child_node.id
                 parents = node.id
-        else:
-            # raise
-            expr = random.randint(1, 9)
-            idx_node += 1
-            child_node = Node(expr, node.idx_node, node.id)
-            ids = child_node.id
-            parents = node.id
+            else:
+                expr = random.choice(l_nk)
+                idx_node += 1
+                child_node = Node(expr, node.idx_node, node.id)
+                ids = child_node.id
+                parents = node.id
         return ids, parents, expr
-    ids, parents, expr = add_node(rroot, n, m, rroot.idx_node)
+    ids, parents, expr = add_node(rroot, n, m, rroot.idx_node, 'nk')
     # flatten
     ids = list(flatten(ids))
     parents = list(flatten(parents))
@@ -90,11 +115,10 @@ def num_bracket(ids, parents, i):
 
 def recover(ids, parents, expr_no_brackets):
     expr_recover = []
-    p1 = re.compile('^[0-9]*$')
     for i in expr_no_brackets:
         expr_recover.append(i)
     for i in range(len(parents)):
-        if not p1.match(expr_no_brackets[i]) or parents[i] == -1:
+        if not expr_no_brackets[i] in flatten([l_n, l_nk]) or parents[i] == -1:
             pass
         elif if_left(parents, i):
             num = num_bracket(ids, parents, i)
