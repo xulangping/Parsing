@@ -21,11 +21,15 @@ def make_nodes(n, m):
         if n < m:
             if property == 'n':
                 if random.random() > 0.6:  # add sub-tree
-                    i = random.choice([1, 0])
-                    symbol = random.choice([l_c, l_v][i])
+                    i = random.choice([2, 1, 0])
+                    symbol = random.choice([l_c, l_v, l_u][i])
                     child_node = Node(symbol, node.idx_node, node.id)
-                    x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
-                    y = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                    if i == 2:
+                        x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                        y = add_node(child_node, n + 1, m, child_node.idx_node, 'nk')
+                    else:
+                        x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                        y = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
                     ids = [x[0], child_node.id, y[0]]
                     parents = [x[1], node.id, y[1]]
                     expr = ['(', x[2], symbol, y[2], ')']
@@ -39,7 +43,7 @@ def make_nodes(n, m):
                 if random.random() > 0.6:  # add sub-tree
                     symbol = random.choice(l_u)
                     child_node = Node(symbol, node.idx_node, node.id)
-                    x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
+                    x = add_node(child_node, n + 1, m, child_node.idx_node, 'nk')
                     y = add_node(child_node, n + 1, m, child_node.idx_node, 'nk')
                     ids = [x[0], child_node.id, y[0]]
                     parents = [x[1], node.id, y[1]]
@@ -65,7 +69,9 @@ def make_nodes(n, m):
                 ids = child_node.id
                 parents = node.id
         return ids, parents, expr
-    ids, parents, expr = add_node(rroot, n, m, rroot.idx_node, 'nk')
+
+    property = random.choice(['n', 'nk'])
+    ids, parents, expr = add_node(rroot, n, m, rroot.idx_node, property)
     # flatten
     ids = list(flatten(ids))
     parents = list(flatten(parents))
