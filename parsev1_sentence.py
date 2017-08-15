@@ -5,6 +5,7 @@ l_u = ['的']
 l_v = ['是', '在', '有']
 l_n = ['牛顿', '毛泽东', '凯撒大帝']
 l_nk = ['基本信息', '职业', '代表作品']
+l_d = ['不']
 class Node:
     idx_node = -1
     def __init__(self, content, id, parent):
@@ -23,6 +24,11 @@ def make_nodes(n, m):
                 if random.random() > 0.6:  # add sub-tree
                     i = random.choice([2, 1, 0])
                     symbol = random.choice([l_c, l_v, l_u][i])
+                    if i == 1:
+                        if random.random() > 0.5:
+                            symbol = random.choice(l_d) + symbol
+                        else:
+                            pass
                     child_node = Node(symbol, node.idx_node, node.id)
                     if i == 2:
                         x = add_node(child_node, n + 1, m, child_node.idx_node, 'n')
