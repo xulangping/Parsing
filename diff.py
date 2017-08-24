@@ -35,14 +35,11 @@ def flatten(l):
 
 def group_2(s):
     a = []
-    if len(s) % 2 ==0:
-        for i in range(0, len(s), 2):
-            a.append([s[i], s[i + 1]])
-    else:
-        for i in range(0, len(s) - 1, 2):
-            a.append([s[i], s[i + 1]])
-        a.append(s[-1])
+    for i in range(len(s) - 1):
+        a.append([s[i], s[i + 1]])
     return a
+
+
 def delete_mid(s1, s2):
     a1 = group_2(s1)
     a2 = group_2(s2)
