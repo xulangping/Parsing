@@ -39,7 +39,6 @@ def wer(r, h):
                 d[i][j] = min(substitute, insert, delete)
     result = float(d[len(r)][len(h)]) / len(r) * 100
     result = str("%.2f" % result) + "%"
-
     # find out the manipulation steps
     x = len(r)
     y = len(h)
@@ -80,15 +79,36 @@ def wer(r, h):
         else:
             pass
     return diff
-f = open('aa_nlc_nlc2', encoding='UTF-8')
-lines = f.readlines()
-num_0 = 0
-for line in lines:
+
+
+def main():
+    f = open('aa_nlc_nlc2', encoding='UTF-8')
+    lines = f.readlines()
+    num_0 = 0
+    for line in lines:
+        line = line.strip()
+        [sentence1, sentence2] = line.split('\t')
+        sentence1, sentence2 = sentence1.split(' '), sentence2.split(' ')
+        sentence1 = ['*'] + sentence1
+        sentence2 = ['*'] + sentence2
+        if sentence1 == sentence2:
+            num_0 += 1
+        else:
+            print(line)
+            print(wer(sentence2, sentence1))
+
+
+def test(line):
     line = line.strip()
     [sentence1, sentence2] = line.split('\t')
     sentence1, sentence2 = sentence1.split(' '), sentence2.split(' ')
+    sentence1 = ['*'] + sentence1
+    sentence2 = ['*'] + sentence2
     if sentence1 == sentence2:
-        num_0 += 1
+        pass
     else:
-        print(wer(sentence2, sentence1))
         print(line)
+        print(wer(sentence2, sentence1))
+
+
+test('i love u\ti love to u')
