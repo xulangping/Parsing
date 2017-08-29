@@ -1,7 +1,7 @@
 import sys
 import numpy
 
-
+toe = {'冠词': 0, '单复数': 0, '介词': 0, '词语形态': 0, '拼写': 0 }
 def flatten(l):
     if isinstance(l, list):
         for el in l:
@@ -81,6 +81,21 @@ def wer(r, h):
     return diff
 
 
+def type_of_error(d):
+    global toe
+    for i in d:
+        if i[1] in ['a', 'an', 'the',]:
+            toe['冠词'] += 1
+        elif i[1] in ['on', 'at', 'in', 'of', ]:
+            toe['介词'] += 1
+        elif i[0] + 's' == i[1] or i[0] + 'es' == i[1]:
+            toe['单复数'] += 1
+        elif i[0] + 'ing' == i[1] or i[0] + 'ed' == i[1]:
+            toe['词语形态'] += 1
+        else:
+            print(i[0], i[1])
+
+
 def main():
     f = open('aa_nlc_nlc2', encoding='UTF-8')
     lines = f.readlines()
@@ -94,8 +109,8 @@ def main():
         if sentence1 == sentence2:
             num_0 += 1
         else:
-            print(line)
-            print(wer(sentence2, sentence1))
+            d = wer(sentence2, sentence1)
+            type_of_error(d)
 
 
 def test(line):
@@ -107,8 +122,7 @@ def test(line):
     if sentence1 == sentence2:
         pass
     else:
-        print(line)
         print(wer(sentence2, sentence1))
 
+main()
 
-test('i love u\ti love to u')
