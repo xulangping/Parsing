@@ -1,7 +1,9 @@
 import sys
 import numpy
 
-toe = {'冠词': 0, '单复数': 0, '介词': 0, '词语形态': 0, '拼写': 0 }
+toe = {'冠词': 0, '单复数': 0, '介词': 0, '词语形态': 0, '拼写': 0, '标点': 0, '大小写': 0}
+
+
 def flatten(l):
     if isinstance(l, list):
         for el in l:
@@ -78,20 +80,38 @@ def wer(r, h):
             diff.append([h[i], r[i], i])
         else:
             pass
-    return diff
+    diff_new = []
+    i = 0
+    while i < len(diff) - 1:
+        if diff[i][2] + 1 == diff[i + 1][2]:
+            diff_new.append([diff[i][0] + ' ' + diff[i + 1][0], diff[i][1] + ' ' + diff[i + 1][1], diff[i][2]])
+            i += 2
+        else:
+            diff_new.append(diff[i])
+            i += 1
+    if i < len(diff):
+        diff_new.append(diff[i])
+    return diff_new
 
 
 def type_of_error(d):
     global toe
     for i in d:
-        if i[1] in ['a', 'an', 'the',]:
+        if i[0].upper() == i[1].upper():
+            toe['大小写'] += 1
+        elif i[1] in ['a', 'an', 'the', 'The'] or i[0] in ['a', 'an', 'the', 'The']:
             toe['冠词'] += 1
-        elif i[1] in ['on', 'at', 'in', 'of', ]:
+        elif i[1] in ['on', 'at', 'in', 'of', 'to', 'for', 'about'] or i[0] in ['on', 'at', 'in', 'of', 'to', 'for',
+                                                                                'about']:
             toe['介词'] += 1
-        elif i[0] + 's' == i[1] or i[0] + 'es' == i[1]:
+        elif i[0] + 's' == i[1] or i[0] + 'es' == i[1] or i[1] + 's' == i[0] or i[1] + 'es' == i[0]:
             toe['单复数'] += 1
-        elif i[0] + 'ing' == i[1] or i[0] + 'ed' == i[1]:
+        elif i[0] + 'ing' == i[1] or i[0] + 'ed' == i[1] or i[1] + 'ing' == i[0] or i[1] + 'ed' == i[0] or i[
+            0] + 'ly' == i[1] or i[1] + 'ly' == i[0]:
             toe['词语形态'] += 1
+        elif i[0] in [',', '.', '?', '-'] or i[1] in [',', '.', '?', '-']:
+            toe['标点'] += 1
+
         else:
             print(i[0], i[1])
 
@@ -124,5 +144,5 @@ def test(line):
     else:
         print(wer(sentence2, sentence1))
 
-main()
 
+main()
