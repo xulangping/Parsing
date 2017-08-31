@@ -113,6 +113,7 @@ def type_of_error(d):
             toe['标点'] += 1
 
         else:
+            toe['拼写'] += 1
             print(i[0], i[1])
 
 
@@ -131,6 +132,7 @@ def main():
         else:
             d = wer(sentence2, sentence1)
             type_of_error(d)
+    print(toe)
 
 
 def test(line):
